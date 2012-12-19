@@ -62,8 +62,8 @@ Thanks.
 Links
 =====
 
- [0] https://class.coursera.org/interactivepython-2012-001
- [1] http://ipoveraviancarriers.blogspot.it/2012/11/python-33-and-pyvenv-hackish-solution.html
- [2] http://steveasleep.com/pyglettutorial.html
- [3] http://www.codeskulptor.org
- [4] http://opengameart.org/
+* [0] https://class.coursera.org/interactivepython-2012-001
+* [1] http://ipoveraviancarriers.blogspot.it/2012/11/python-33-and-pyvenv-hackish-solution.html
+* [2] http://steveasleep.com/pyglettutorial.html
+* [3] http://www.codeskulptor.org
+* [4] http://opengameart.org/
