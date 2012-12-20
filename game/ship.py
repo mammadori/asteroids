@@ -1,6 +1,7 @@
 # -*- coding: utf-8 *-*
 
 from pyglet.window import key
+from pyglet import clock
 from . import util, physicalobject
 from . import resources
 
@@ -88,7 +89,12 @@ class Ship(physicalobject.PhysicalObject):
         self.bullets.add(bullet)
 
     def destroy(self):
+        # check invulnerability
+        if self.opacity != 255:
+            return
+
         explosion = super().destroy()
+
         self.rotation = -90
         self.x = self.screensize[0] / 2
         self.y = self.screensize[1] / 2
@@ -96,3 +102,12 @@ class Ship(physicalobject.PhysicalObject):
         self.visible = True
         return explosion
 
+
+    def normal_mode(self, dt):
+        self.opacity = 255
+
+
+    def invulnerable(self, time):
+        # be invulnerable for a brief time
+        self.opacity = 128
+        clock.schedule_once(self.normal_mode, time)

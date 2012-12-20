@@ -116,6 +116,7 @@ class Game(window.Window):
             # ship destroyed!
             self.explosions.add(self.player.destroy())
             self.lives -= 1
+            self.player.invulnerable(5)
             if self.lives == 0:
                 # game over
                 self.stop()

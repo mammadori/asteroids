@@ -57,7 +57,6 @@ class ClickableSprite(pyglet.sprite.Sprite):
         self.hook_function = hook_function
 
     def on_mouse_press(self, x, y, button, modifiers):
-        print("ciao")
         if not self.visible:
             return
         x0 = self.x - self.width / 2.0

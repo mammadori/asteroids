@@ -9,10 +9,17 @@ def process_sprite_group(group, dt):
     calls update for the whole group and removes after who returns True
     """
     for item in set(group):
-        if item.update(dt):
-            # remove expired items
-            group.remove(item)
-            item.delete()
+        try:
+            if item.update(dt):
+                # remove expired items
+                group.remove(item)
+                item.delete()
+        except AttributeError:
+            try:
+               group.remove(item)
+            except KeyError:
+                pass
+            continue
 
 
 def group_collide(group, other_object):
@@ -24,10 +31,13 @@ def group_collide(group, other_object):
     """
     collided = set()
     for item in set(group):
-        if item.collide(other_object):
-            collided.add(item.destroy())
-            group.remove(item)
-            item.delete() # free batch
+        try:
+            if item.collide(other_object):
+                collided.add(item.destroy())
+                group.remove(item)
+                item.delete() # free batch
+        except AttributeError:
+            continue
 
     # remove collide objects from group
     return collided
@@ -44,8 +54,11 @@ def group_group_collide(group1, group2):
         if len(c) > 0:
             # do not destroy
             collided.update(c)
-            group1.remove(item)
-            item.delete() # free batch
+            try:
+                group1.remove(item)
+                item.delete() # free batch
+            except AttributeError:
+                continue
 
     return collided
 
@@ -61,9 +74,14 @@ class MovingSprite(pyglet.sprite.Sprite):
         # Angle (pyglet uses negative degrees)
         self.rotation = rotation
         self.rotation_speed = rotation_speed
+        self.should_delete = False
 
 
     def update(self, dt):
+        if self.should_delete:
+            self.delete()
+            return True
+
         # rotate object
         self.rotation += self.rotation_speed * dt
 
@@ -105,10 +123,9 @@ class PhysicalObject(MovingSprite):
         self.age = float(0)
 
     def update(self, dt):
-        super().update(dt)
-        # age the object
         self.age += dt
-        return (self.age > self.lifespan) # update could be checked for expiring
+        # age the object
+        return super().update(dt) or (self.age > self.lifespan) # update could be checked for expiring
 
 
     def collide(self, other_object):
@@ -126,14 +143,18 @@ class PhysicalObject(MovingSprite):
 
 
     def destroy(self):
-        self.visible = False
-
         pos = list(self.position)
         vel = (self.vel[0]/2, self.vel[1] / 2)
 
-        explosion = PhysicalObject(img=resources.explosion_animation,
+        explosion = MovingSprite(img=resources.explosion_animation,
                 vel=vel, screensize=self.screensize, x=pos[0], y=pos[1],
-                batch=self.batch, group=self.group, lifespan=1)
+                batch=self.batch, group=self.group)
+
+        # monkey patching done well
+        @explosion.event
+        def on_animation_end():
+            explosion.visible = False
+            explosion.should_delete = True
 
         resources.explosion_sound.play()
 

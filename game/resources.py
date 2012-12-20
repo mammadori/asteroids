@@ -20,7 +20,7 @@ explosion_image = pyglet.resource.image("explosion.hasgraphics.png")
 _explosion_seq = [util.center_image(img) for img in pyglet.image.ImageGrid(explosion_image, 9, 9)]
 # revert column wise the sequence
 explosion_seq = [_explosion_seq[9*(j-1) + i] for j in range(9, 0, -1) for i in range(9)]
-explosion_animation = pyglet.image.Animation.from_image_sequence(explosion_seq, 1 / (9 * 9))
+explosion_animation = pyglet.image.Animation.from_image_sequence(explosion_seq, 1 / 60.0)
 
 background_image = pyglet.resource.image("nebula_blue.png")
 debris_image = pyglet.resource.image("debris1_blue.png")
