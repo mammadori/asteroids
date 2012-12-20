@@ -10,8 +10,9 @@ def process_sprite_group(group, dt):
     """
     for item in set(group):
         if item.update(dt):
-            item.visible=False
+            # remove expired items
             group.remove(item)
+            item.delete()
 
 
 def group_collide(group, other_object):
@@ -26,6 +27,7 @@ def group_collide(group, other_object):
         if item.collide(other_object):
             collided.add(item.destroy())
             group.remove(item)
+            item.delete() # free batch
 
     # remove collide objects from group
     return collided
@@ -40,8 +42,11 @@ def group_group_collide(group1, group2):
     for item in set(group1):
         c = group_collide(group2, item)
         if len(c) > 0:
+            # do not destroy
             collided.update(c)
             group1.remove(item)
+            item.delete() # free batch
+
     return collided
 
 
