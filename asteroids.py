@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 *-*
 
-from pyglet import window, app, graphics, clock, text, sprite
+from pyglet import window, app, graphics, clock, text
 from game import load, resources, physicalobject
 
 clock.set_fps_limit(None)
@@ -81,6 +81,7 @@ class Game(window.Window):
         self.asteroids = set()
         self.started = False
         self.splashscreen.visible = True
+        self.player.opacity = 255
 
 
     def spawn_asteroid(self, dt=0):
@@ -108,18 +109,19 @@ class Game(window.Window):
         self.explosions.update(bullet_explosions)
         self.score += len(bullet_explosions)
 
-        # Look if ship collides with asteroids
-        ship_explosions = physicalobject.group_collide(self.asteroids, self.player)
-        self.explosions.update(ship_explosions)
+        if self.player.opacity == 255:
+            # Look if ship collides with asteroids
+            ship_explosions = physicalobject.group_collide(self.asteroids, self.player)
+            self.explosions.update(ship_explosions)
 
-        if len(ship_explosions):
-            # ship destroyed!
-            self.explosions.add(self.player.destroy())
-            self.lives -= 1
-            self.player.invulnerable(5)
-            if self.lives == 0:
-                # game over
-                self.stop()
+            if len(ship_explosions):
+                # ship destroyed!
+                self.explosions.add(self.player.destroy())
+                self.lives -= 1
+                self.player.invulnerable(5)
+                if self.lives == 0:
+                    # game over
+                    self.stop()
 
         self.score_label.text = "Score: %d" % self.score
         self.lives_label.text = "Lives: %d" % self.lives

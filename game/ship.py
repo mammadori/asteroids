@@ -99,6 +99,7 @@ class Ship(physicalobject.PhysicalObject):
         self.x = self.screensize[0] / 2
         self.y = self.screensize[1] / 2
         self.vel = [0, 0]
+        self.set_thrust(False)
         self.visible = True
         return explosion
 
