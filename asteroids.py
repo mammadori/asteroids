@@ -10,11 +10,6 @@ clock.set_fps_limit(None)
 MAX_ROCKS = 12
 LIVES = 3
 
-joysticks = pyglet.input.get_joysticks()
-if joysticks:
-    joystick = joysticks[0]
-joystick.open()
-joystick.movement_threshold = 0.2
 
 class Game(window.Window):
     def __init__(self, *args, **kwargs):
@@ -70,8 +65,15 @@ class Game(window.Window):
         clock.schedule_interval(self.spawn_asteroid, 1)
 
         # add event handlers to the ship and splashscreen
+        joysticks = pyglet.input.get_joysticks()
+        try:
+            joystick = joysticks[0]
+            joystick.open()
+            joystick.push_handlers(self.player)
+        except:
+            raise
+
         self.push_handlers(self.player)
-        joystick.push_handlers(self.player)
         self.push_handlers(self.splashscreen)
 
 
@@ -135,7 +137,7 @@ class Game(window.Window):
 
 
 if __name__ == '__main__':
-    game = Game(fullscreen=True)
-    #game = Game(800, 600)
+    #game = Game(fullscreen=True)
+    game = Game(800, 600)
 
     app.run()
