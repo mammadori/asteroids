@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 *-*
 
-from pyglet import window, app, graphics, clock, text
 import pyglet
+from pyglet import window, app, graphics, clock, text
 from game import load, resources, physicalobject
-
-clock.set_fps_limit(None)
 
 MAX_ROCKS = 12
 LIVES = 3
@@ -58,23 +56,21 @@ class Game(window.Window):
         self.score_label = text.Label(font_size=20, anchor_x='right', text="Score: %d" % self.score, x=self.size[0]-40,
                     y=self.size[1]-40, batch=self.batch, group=toplayer)
 
-        # update frequency
-        clock.schedule_interval(self.update, 1 / 120)
+        self.push_handlers(self.player)
+        self.push_handlers(self.splashscreen)
+
+        # add event handlers to the ship and splashscreen
+        joysticks = pyglet.input.get_joysticks()
+        for joystick in joysticks:
+            joystick.open()
+            joystick.push_handlers(self.player)
 
         # spawn a new asteroid each second
         clock.schedule_interval(self.spawn_asteroid, 1)
 
-        # add event handlers to the ship and splashscreen
-        joysticks = pyglet.input.get_joysticks()
-        try:
-            joystick = joysticks[0]
-            joystick.open()
-            joystick.push_handlers(self.player)
-        except:
-            raise
-
-        self.push_handlers(self.player)
-        self.push_handlers(self.splashscreen)
+        # update function
+        # upstream bug: more than 60hz and joypad stops generating events!
+        clock.schedule_interval(self.update, 1 / 60)
 
 
     def start(self):
@@ -104,7 +100,6 @@ class Game(window.Window):
 
 
     def on_draw(self):
-        self.clear()
         self.batch.draw()
         self.fps_display.draw()
 

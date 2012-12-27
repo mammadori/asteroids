@@ -27,15 +27,15 @@ debris_image = pyglet.resource.image("debris1_blue.png")
 splashscreen = util.center_image(pyglet.resource.image("splash.png"))
 
 
-bullet_sound = pyglet.resource.media("missile.wav", streaming=False)
-explosion_sound = pyglet.resource.media("explosion.wav", streaming=False)
+bullet_sound = pyglet.resource.media("missile.ogg", streaming=False)
+explosion_sound = pyglet.resource.media("explosion.ogg", streaming=False)
 
 
 thrust_sound = pyglet.media.Player()
-thrust_sound.queue(pyglet.resource.media("thrust.wav", streaming=False))
+thrust_sound.queue(pyglet.resource.media("thrust.ogg", streaming=False))
 thrust_sound.eos_action = thrust_sound.EOS_LOOP
 
 soundtrack = pyglet.media.Player()
-soundtrack.queue(pyglet.resource.media("soundtrack.wav"))
+soundtrack.queue(pyglet.resource.media("soundtrack.ogg"))
 soundtrack.eos_action = soundtrack.EOS_LOOP
 
