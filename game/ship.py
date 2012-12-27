@@ -22,6 +22,38 @@ class Ship(physicalobject.PhysicalObject):
         self.normal_image = self.image
 
         self.bullets = set() # FIXME: bullet by OOT
+        self.forward = [0, 0]
+        self.shoot_angle = [0, 0]
+
+    def on_joybutton_press(self, joystick, button):
+        self.shoot()
+
+
+    def on_joyaxis_motion(self, joystick, axis, value):
+        #i = {'x': (self.forward, 0)
+        #     'y': (self.forward, 1),
+        #     'rz': (self.shoot_angle, 0),
+        #     'rx': (self.shoot_angle, 1),
+        #i[axis][0][axis][1] = valie }
+
+        print(axis, value)
+        if axis == 'x':
+            self.forward[0] = value
+            do_update = True
+        elif axis == 'y':
+            self.forward[1] = -value
+            do_update = True
+        elif axis == 'rx':
+            self.shoot_angle[1] = -value
+            self.shoot(shoot_angle)
+        elif axis == 'rz':
+            self.shoot_angle[0] = value
+            self.shoot(shoot_angle)
+        else:
+            do_update = False
+
+        if do_update:
+            self.rotation = util.vector_to_angle(self.forward)
 
 
     def on_key_press(self, symbol, modifiers):
@@ -68,19 +100,24 @@ class Ship(physicalobject.PhysicalObject):
     def set_thrust(self, on):
         self.thrust = on
         if on:
+            self.forward = util.angle_to_vector(self.rotation)
             resources.thrust_sound.seek(0)
             resources.thrust_sound.play()
         else:
+            self.forward = [0, 0]
             resources.thrust_sound.pause()
 
     def turn(self, clockwise):
         self.rotation_speed = clockwise * self.rotate_speed
 
 
-    def shoot(self):
+    def shoot(self, angle=None):
         resources.bullet_sound.play()
 
-        forward = util.angle_to_vector(self.rotation)
+        if not angle:
+            forward = util.angle_to_vector(self.rotation)
+        else:
+            forward = self.shoot_angle
 
         bullet_pos = [self.x + self.radius * forward[0], self.y + self.radius * forward[1]]
         bullet_vel = [self.vel[0] + self.bullet_speed * forward[0], self.vel[1] + self.bullet_speed * forward[1]]

@@ -44,3 +44,8 @@ def angle_to_vector(rotation):
     ang = -math.radians(rotation)
     return [math.cos(ang), math.sin(ang)]
 
+
+def vector_to_angle(vector):
+    return -math.degrees(math.atan2(vector[1], vector[0]))
+
+
